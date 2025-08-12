@@ -1,12 +1,16 @@
 # Multi-stage build for production optimization
 FROM node:18-alpine AS base
 
-# Install OpenSSL + libssl for Prisma
-RUN apk add --no-cache openssl libssl1.1 || apk add --no-cache libssl3
+# Install OpenSSL 1.1.x compatibility and other dependencies
+RUN apk add --no-cache \
+    libc6-compat \
+    openssl1.1-compat \
+    openssl-dev \
+    && ln -sf /usr/lib/libssl.so.1.1 /usr/lib/libssl.so \
+    && ln -sf /usr/lib/libcrypto.so.1.1 /usr/lib/libcrypto.so
 
 # Install dependencies only when needed
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
@@ -19,7 +23,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Generate Prisma client
+# Generate Prisma client with explicit OpenSSL version
+ENV PRISMA_CLI_BINARY_TARGETS="native,linux-musl"
 RUN npx prisma generate
 
 # Build the application
@@ -30,6 +35,7 @@ FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV NODE_OPTIONS="--openssl-legacy-provider"
 
 # Create a non-root user
 RUN addgroup --system --gid 1001 nodejs

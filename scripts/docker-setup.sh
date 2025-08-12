@@ -41,11 +41,34 @@ fi
 # Make scripts executable
 chmod +x scripts/*.sh
 
+echo "🔄 Stopping existing containers..."
+docker-compose down --volumes --remove-orphans
+
+echo "🔨 Building containers with OpenSSL compatibility fixes..."
+docker-compose build --no-cache
+
+echo "🚀 Starting services..."
+docker-compose up -d
+
+echo "⏳ Waiting for services to be ready..."
+sleep 15
+
+echo "🔍 Checking service health..."
+if docker-compose ps | grep -q "Up (healthy)"; then
+    echo "✅ Services are running and healthy!"
+else
+    echo "⚠️  Services are starting up. Check logs with: docker-compose logs"
+fi
+
 echo "✅ Docker environment setup complete!"
 echo ""
 echo "Next steps:"
 echo "1. Update .env files with your configuration"
-echo "2. Run 'npm run docker:dev' for development"
-echo "3. Run 'npm run docker:prod' for production"
-echo "4. Run 'npm run docker:migrate' to run database migrations"
-echo "5. Run 'npm run docker:seed' to seed the database"
+echo "2. Run 'bash scripts/docker-migrate.sh' to run database migrations"
+echo "3. Run 'npm run docker:seed' to seed the database"
+echo "4. Access the API at http://localhost:3000/api/health"
+echo ""
+echo "Useful commands:"
+echo "- View logs: docker-compose logs -f"
+echo "- Stop services: docker-compose down"
+echo "- Restart services: docker-compose restart"
