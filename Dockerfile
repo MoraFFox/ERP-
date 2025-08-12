@@ -1,6 +1,9 @@
 # Multi-stage build for production optimization
 FROM node:18-alpine AS base
 
+# Install OpenSSL + libssl for Prisma
+RUN apk add --no-cache openssl libssl1.1 || apk add --no-cache libssl3
+
 # Install dependencies only when needed
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
