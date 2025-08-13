@@ -1,10 +1,11 @@
-import type { Response, NextFunction } from "express"
+import type { Request, Response, NextFunction } from "express"
 import { ProductService } from "../services/productService"
 import { createProductSchema, updateProductSchema, productQuerySchema } from "../validation/product"
 import type { AuthenticatedRequest } from "../types/auth"
 
 export class ProductController {
-  static async createProduct(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  static async createProduct(req: Request, res: Response, next: NextFunction) {
+    const authReq = req as unknown as AuthenticatedRequest
     try {
       // Validate request body
       const { error, value } = createProductSchema.validate(req.body)
@@ -16,31 +17,31 @@ export class ProductController {
         })
       }
 
-      const product = await ProductService.createProduct(value, req.user!.userId)
-      res.status(201).json({
+      const product = await ProductService.createProduct(value, authReq.user!.userId)
+      return res.status(201).json({
         success: true,
         message: "Product created successfully",
         data: product,
       })
     } catch (error) {
-      next(error)
+      return next(error)
     }
   }
 
-  static async getProduct(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  static async getProduct(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params
     try {
-      const { id } = req.params
       const product = await ProductService.getProductById(id)
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         data: product,
       })
     } catch (error) {
-      next(error)
+      return next(error)
     }
   }
 
-  static async getProducts(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  static async getProducts(req: Request, res: Response, next: NextFunction) {
     try {
       // Validate query parameters
       const { error, value } = productQuerySchema.validate(req.query)
@@ -53,19 +54,19 @@ export class ProductController {
       }
 
       const result = await ProductService.getProducts(value)
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         data: result,
       })
     } catch (error) {
-      next(error)
+      return next(error)
     }
   }
 
-  static async updateProduct(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  static async updateProduct(req: Request, res: Response, next: NextFunction) {
+    const authReq = req as unknown as AuthenticatedRequest
+    const { id } = req.params
     try {
-      const { id } = req.params
-
       // Validate request body
       const { error, value } = updateProductSchema.validate(req.body)
       if (error) {
@@ -77,26 +78,26 @@ export class ProductController {
       }
 
       const product = await ProductService.updateProduct(id, value)
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: "Product updated successfully",
         data: product,
       })
     } catch (error) {
-      next(error)
+      return next(error)
     }
   }
 
-  static async deleteProduct(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  static async deleteProduct(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params
     try {
-      const { id } = req.params
       await ProductService.deleteProduct(id)
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: "Product deleted successfully",
       })
     } catch (error) {
-      next(error)
+      return next(error)
     }
   }
 }

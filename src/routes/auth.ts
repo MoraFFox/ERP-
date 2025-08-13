@@ -2,7 +2,7 @@ import { Router } from "express"
 import { AuthController } from "../controllers/authController"
 import { authLimiter } from "../middleware/rateLimiter"
 
-const router = Router()
+const router: Router = Router()
 
 // Apply rate limiting to all auth routes
 router.use(authLimiter)

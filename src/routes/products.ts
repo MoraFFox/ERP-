@@ -2,7 +2,7 @@ import { Router } from "express"
 import { ProductController } from "../controllers/productController"
 import { authenticateToken } from "../middleware/auth"
 
-const router = Router()
+const router: Router = Router()
 
 // Apply authentication to all product routes
 router.use(authenticateToken)

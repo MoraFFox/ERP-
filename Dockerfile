@@ -1,61 +1,59 @@
-# Multi-stage build for production optimization
+# Base image
 FROM node:18-alpine AS base
+RUN apk add --no-cache libc6-compat openssl openssl-dev
 
-# Install OpenSSL 1.1.x compatibility and other dependencies
-RUN apk add --no-cache \
-    libc6-compat \
-    openssl1.1-compat \
-    openssl-dev \
-    && ln -sf /usr/lib/libssl.so.1.1 /usr/lib/libssl.so \
-    && ln -sf /usr/lib/libcrypto.so.1.1 /usr/lib/libcrypto.so
-
-# Install dependencies only when needed
+# Dependencies stage (production only)
 FROM base AS deps
 WORKDIR /app
-
-# Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
-RUN npm ci --only=production && npm cache clean --force
+RUN if [ -f package-lock.json ]; then npm ci --omit=dev; else npm install --omit=dev; fi && npm cache clean --force
 
-# Rebuild the source code only when needed
+# Builder stage
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+COPY package.json package-lock.json* ./
+# Install all deps (including dev)
+RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi && npm cache clean --force
+# Temporary typescript install for building
+RUN npm install typescript --no-save
 COPY . .
 
-# Generate Prisma client with explicit OpenSSL version
-ENV PRISMA_CLI_BINARY_TARGETS="native,linux-musl"
-RUN npx prisma generate
+# Prisma env vars for linux-musl
+ENV PRISMA_BINARY_TARGETS="linux-musl"
+ENV PRISMA_CLI_QUERY_ENGINE_TYPE="binary"
+ENV PRISMA_CLIENT_ENGINE_TYPE="binary"
+ENV OPENSSL_CONF="/dev/null"
 
-# Build the application
-RUN npm run build
+# Generate Prisma client
+RUN PRISMA_CLI_BINARY_TARGETS=linux-musl npx prisma generate
 
-# Production image, copy all the files and run the app
+RUN apk add --no-cache openssl libc6-compat
+
+
+# Build the app
+RUN npm run build && ls -la dist/
+
+# Production stage
 FROM base AS runner
 WORKDIR /app
-
 ENV NODE_ENV=production
-ENV NODE_OPTIONS="--openssl-legacy-provider"
+ENV OPENSSL_CONF="/dev/null"
+ENV PRISMA_BINARY_TARGETS="linux-musl"
+ENV PRISMA_CLI_QUERY_ENGINE_TYPE="binary"
+ENV PRISMA_CLIENT_ENGINE_TYPE="binary"
 
-# Create a non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nodejs
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nodejs
 
-# Copy built application
-COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
-COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=nodejs:nodejs /app/package.json ./package.json
+# Copy production deps and built files
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY package.json ./
 COPY --from=builder --chown=nodejs:nodejs /app/prisma ./prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --chown=nodejs:nodejs healthcheck.js ./healthcheck.js
 
-# Switch to non-root user
 USER nodejs
-
-# Expose port
 EXPOSE 3000
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3000/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
-
-# Start the application
-CMD ["npm", "start"]
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 CMD node healthcheck.js
+CMD ["node", "dist/server.js"]

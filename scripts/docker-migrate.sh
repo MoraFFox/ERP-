@@ -12,7 +12,7 @@ wait_for_db() {
     local attempt=1
     
     while [ $attempt -le $max_attempts ]; do
-        if docker exec erp-postgres pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-erp_system} > /dev/null 2>&1; then
+        if docker exec erp-postgres-dev pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-erp_system_dev} > /dev/null 2>&1; then
             echo "✅ Database is ready!"
             return 0
         fi
@@ -27,9 +27,9 @@ wait_for_db() {
 }
 
 # Check if Docker Compose services are running
-if ! docker-compose ps | grep -q "Up"; then
+if ! docker-compose -f docker-compose.dev.yml ps | grep -q "Up"; then
     echo "❌ Docker Compose services are not running. Starting them..."
-    docker-compose up -d
+    docker-compose -f docker-compose.dev.yml up -d
     sleep 10
 fi
 
@@ -37,21 +37,19 @@ fi
 wait_for_db
 
 # Check if the API container is running
-if ! docker ps | grep -q "erp-api"; then
+if ! docker ps | grep -q "erp-api-dev"; then
     echo "❌ API container is not running. Please check the logs:"
-    docker-compose logs api
+    docker-compose -f docker-compose.dev.yml logs api-dev
     exit 1
 fi
 
 echo "📊 Running Prisma migrations..."
-docker exec -e PRISMA_CLI_BINARY_TARGETS="native,linux-musl" \
-           -e NODE_OPTIONS="--openssl-legacy-provider" \
-           erp-api npx prisma migrate deploy
+NEON_DATABASE_URL="postgresql://postgres:postgres@localhost:5433/erp_system_dev?schema=public" \
+npx prisma migrate deploy
 
 echo "🔧 Ensuring Prisma client is generated..."
-docker exec -e PRISMA_CLI_BINARY_TARGETS="native,linux-musl" \
-           -e NODE_OPTIONS="--openssl-legacy-provider" \
-           erp-api npx prisma generate
+NEON_DATABASE_URL="postgresql://postgres:postgres@localhost:5433/erp_system_dev?schema=public" \
+npx prisma generate
 
 echo "✅ Database migrations completed successfully!"
 
@@ -60,7 +58,7 @@ read -p "🌱 Do you want to run seed data? (y/N): " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "🌱 Running seed data..."
-    docker exec -e NODE_OPTIONS="--openssl-legacy-provider" \
-               erp-api npm run seed
+    NEON_DATABASE_URL="postgresql://postgres:postgres@localhost:5433/erp_system_dev?schema=public" \
+    npm run db:seed
     echo "✅ Seed data completed!"
 fi

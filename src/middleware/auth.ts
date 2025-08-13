@@ -1,50 +1,51 @@
-import type { Response, NextFunction } from "express"
+import type { Request, Response, NextFunction } from "express"
 import { JWTUtils } from "../utils/jwt"
 import type { AuthenticatedRequest } from "../types/auth"
 
-export const authenticateToken = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-  const authHeader = req.headers.authorization
-  const token = authHeader && authHeader.split(" ")[1] // Bearer TOKEN
-
+export const authenticateToken = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+  const authHeader = (req as unknown as Request).get('authorization');
+  const token = authHeader ? authHeader.split(" ")[1] : undefined;
   if (!token) {
-    return res.status(401).json({
+    res.status(401).json({
       success: false,
       message: "Access token required",
-    })
+    });
+    return;
   }
 
   try {
-    const decoded = JWTUtils.verifyAccessToken(token)
+    const decoded = JWTUtils.verifyAccessToken(token);
     req.user = {
       userId: decoded.userId,
       email: decoded.email,
       roleId: decoded.roleId,
-    }
-    next()
+    };
+    next();
+    return;
   } catch (error) {
-    return res.status(403).json({
+    res.status(403).json({
       success: false,
       message: "Invalid or expired token",
-    })
+    });
+    return;
   }
-}
+};
 
-export const optionalAuth = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-  const authHeader = req.headers.authorization
-  const token = authHeader && authHeader.split(" ")[1]
-
+export const optionalAuth = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+  const authHeader = (req as unknown as Request).get('authorization');
+  const token = authHeader ? authHeader.split(" ")[1] : undefined;
   if (token) {
     try {
-      const decoded = JWTUtils.verifyAccessToken(token)
+      const decoded = JWTUtils.verifyAccessToken(token);
       req.user = {
         userId: decoded.userId,
         email: decoded.email,
         roleId: decoded.roleId,
-      }
+      };
     } catch (error) {
-      // Token is invalid, but we continue without user context
+      // Token invalid, continue without user context
     }
   }
-
-  next()
-}
+  next();
+  return;
+};

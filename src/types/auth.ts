@@ -1,3 +1,5 @@
+import type { Request } from "express";
+
 export interface RegisterRequest {
   email: string
   password: string
@@ -41,7 +43,8 @@ export interface JWTPayload {
   type: "access" | "refresh"
 }
 
-export interface AuthenticatedRequest extends Request {
+// Changed to intersection type for proper extension of Express Request
+export type AuthenticatedRequest = Request & {
   user?: {
     userId: string
     email: string

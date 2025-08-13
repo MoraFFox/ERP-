@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from "express"
 import { prisma } from "../server"
 
-const router = Router()
+const router: Router = Router()
 
 /**
  * @route   GET /api/health

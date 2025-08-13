@@ -16,9 +16,9 @@ export class AuthController {
       }
 
       const result = await AuthService.register(value)
-      res.status(201).json(result)
+      return res.status(201).json(result)
     } catch (error) {
-      next(error)
+      return next(error)
     }
   }
 
@@ -35,9 +35,9 @@ export class AuthController {
       }
 
       const result = await AuthService.login(value)
-      res.status(200).json(result)
+      return res.status(200).json(result)
     } catch (error) {
-      next(error)
+      return next(error)
     }
   }
 
@@ -54,9 +54,9 @@ export class AuthController {
       }
 
       const result = await AuthService.refreshToken(value.refreshToken)
-      res.status(200).json(result)
+      return res.status(200).json(result)
     } catch (error) {
-      next(error)
+      return next(error)
     }
   }
 }

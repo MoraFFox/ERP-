@@ -2,7 +2,7 @@ import { Router } from "express"
 import { ClientController } from "../controllers/clientController"
 import { authenticateToken } from "../middleware/auth"
 
-const router = Router()
+const router: Router = Router()
 
 // Apply authentication to all client routes
 router.use(authenticateToken)

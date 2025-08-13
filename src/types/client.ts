@@ -6,7 +6,7 @@ export interface CreateClientRequest {
   city?: string
   state?: string
   zipCode?: string
-  country?: string
+  country: string
   website?: string
   industry?: string
   companySize?: string
@@ -21,13 +21,13 @@ export interface ClientResponse {
   id: string
   name: string
   email: string
-  phone?: string
-  address?: string
-  city?: string
-  state?: string
-  zipCode?: string
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
   country: string
-  website?: string
+  website?: string | null
   industry?: string
   companySize?: string
   status: string
