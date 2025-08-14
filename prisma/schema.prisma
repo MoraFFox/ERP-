@@ -6,13 +6,9 @@ generator client {
   binaryTargets = ["native", "linux-musl"]
 }
 
-
-
-
-
 datasource db {
   provider = "postgresql"
-  url      = env("NEON_DATABASE_URL")
+  url      = env("NEON_NEON_NEON_NEON_DATABASE_URL")
 }
 
 // User Management
@@ -151,9 +147,10 @@ model Order {
   updatedAt   DateTime    @updatedAt
 
   // Relations
-  orderItems OrderItem[]
-  invoices   Invoice[]
-  returns    Return[]
+  orderItems      OrderItem[]
+  deliverySchedules DeliverySchedule[]
+  invoices        Invoice[]
+  returns         Return[]
 
   @@index([orderNumber])
   @@index([clientId])
@@ -206,6 +203,7 @@ model MaintenanceVisit {
   findings    String?
   actions     String?
   cost        Decimal?          @db.Decimal(10, 2)
+  location    Json?             // Added location field for lat/lng coordinates
   notes       String?
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
@@ -244,6 +242,7 @@ model VisitCall {
   purpose     String
   outcome     String?
   followUpDate DateTime?
+  distanceKm  Decimal?   @db.Decimal(6, 2) // Added distance tracking field
   notes       String?
   visitDate   DateTime   @default(now())
   createdAt   DateTime   @default(now())
@@ -427,10 +426,37 @@ model AuditLog {
   ipAddress String?
   userAgent String?
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
   @@index([action])
   @@index([resource])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+// Delivery Management
+model DeliverySchedule {
+  id             String           @id @default(cuid())
+  order          Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId        String
+  deliveryDate   DateTime
+  assignedDriver String?
+  status         DeliveryStatus   @default(SCHEDULED)
+  notes          String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@index([orderId])
+  @@index([deliveryDate])
+  @@index([status])
+  @@map("delivery_schedules")
+}
+
+enum DeliveryStatus {
+  SCHEDULED
+  IN_PROGRESS
+  DELIVERED
+  MISSED
+  CANCELLED
 }

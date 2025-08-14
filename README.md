@@ -1,95 +1,104 @@
 # AI-Powered ERP System
 
-A comprehensive Enterprise Resource Planning system with AI capabilities for managing clients, sales, maintenance, and business analytics.
+A comprehensive Enterprise Resource Planning system built with Next.js for managing clients, products, orders, deliveries, maintenance, and business operations.
 
-## Architecture Overview
+## System Overview
 
-The system follows a microservices architecture with the following components:
+The ERP system provides complete business management functionality including:
 
-### Core Services
-- **API Gateway**: Main Express.js server handling all HTTP requests
-- **Authentication Service**: JWT-based auth with refresh tokens
-- **Database Layer**: PostgreSQL with Prisma ORM
-- **AI Microservices**: Python FastAPI services for ML models
+- **Client Management**: Business details, contact information, and contract generation
+- **Product Catalog**: Inventory tracking, pricing, and quality ratings
+- **Order Processing**: Daily orders with delivery scheduling and status tracking
+- **Delivery Management**: Automated scheduling with route optimization
+- **Maintenance Scheduling**: Location-based visits with technician routing
+- **Visit & Call Logging**: Client interaction tracking with distance calculations
+- **Unified Dashboard**: Real-time analytics and operational visibility
 
-### System Architecture
+## Technology Stack
 
-\`\`\`mermaid
-graph TB
-    Client[Frontend React App] --> Gateway[API Gateway - Express.js]
-    Gateway --> Auth[Auth Service]
-    Gateway --> ClientAPI[Client Management API]
-    Gateway --> ProductAPI[Product Management API]
-    Gateway --> OrderAPI[Order Management API]
-    Gateway --> MaintenanceAPI[Maintenance API]
-    Gateway --> AnalyticsAPI[Analytics API]
-    
-    Auth --> DB[(PostgreSQL Database)]
-    ClientAPI --> DB
-    ProductAPI --> DB
-    OrderAPI --> DB
-    MaintenanceAPI --> DB
-    AnalyticsAPI --> DB
-    
-    Gateway --> AIGateway[AI Services Gateway]
-    AIGateway --> Forecasting[Forecasting Service - FastAPI]
-    AIGateway --> ChurnDetection[Churn Detection - FastAPI]
-    AIGateway --> OCR[OCR Service - FastAPI]
-    AIGateway --> Sentiment[Sentiment Analysis - FastAPI]
-    
-    DB --> Prisma[Prisma ORM]
-\`\`\`
+- **Frontend**: Next.js 14 + React 18 + TypeScript
+- **Styling**: Tailwind CSS + Custom Design System
+- **UI Components**: Custom component library with professional design
+- **State Management**: React hooks and context
+- **Forms**: React Hook Form + Zod validation
+- **Icons**: Lucide React
+- **Maps**: Interactive mapping for route optimization
+- **Calendar**: Unified scheduling interface
 
-### Technology Stack
-- **Backend**: Node.js + Express.js + TypeScript
-- **Database**: PostgreSQL
-- **ORM**: Prisma
-- **Authentication**: JWT + Refresh Tokens + bcrypt
-- **Containerization**: Docker + Docker Compose
-- **AI Services**: Python + FastAPI
-- **Frontend**: React (Stage 2)
+## Features
 
-## Stage 1 Implementation
+### Stage 1: Core Foundation ✅
+- Database schema and architecture
+- Authentication system with JWT
+- Client and product management APIs
+- Docker configuration and deployment
 
-This stage includes:
-- ✅ Architecture design and documentation
-- ✅ Database schema with Prisma
-- ✅ Authentication system (JWT + refresh tokens)
-- ✅ Core CRUD endpoints (clients, products)
-- ✅ Docker configuration
-- ✅ Seed data and health checks
-- ✅ API documentation
-- ✅ Basic testing setup
+### Stage 2: Frontend Application ✅
+- React frontend with TypeScript
+- Authentication pages and protected routes
+- Client entry forms with file uploads
+- Product catalog with filtering and search
+- Daily order forms with multi-select
+
+### Stage 3: Advanced Operations ✅
+- Delivery scheduling with auto-generation
+- Maintenance visit planning with route optimization
+- Visit and call logging with distance tracking
+- Unified calendar and map integration
+- Comprehensive dashboard with real-time metrics
 
 ## Quick Start
 
 \`\`\`bash
-# Clone and setup
-git clone <repo-url>
-cd erp-system
+# Install dependencies
+npm install
 
-# Start with Docker Compose
-docker-compose up -d
+# Run development server
+npm run dev
 
-# Run migrations and seed data
-npm run db:migrate
-npm run db:seed
+# Build for production
+npm run build
 
-# Test the API
-curl http://localhost:3000/api/health
+# Start production server
+npm start
 \`\`\`
 
-## API Endpoints
+## Demo Credentials
 
-### Authentication
-- `POST /auth/register` - Register new user
-- `POST /auth/login` - Login user
-- `POST /auth/refresh` - Refresh access token
+Use these credentials to explore the system:
+- **Email**: test@example.com
+- **Password**: password123
 
-### Core Resources
-- `POST /api/clients` - Create client
-- `GET /api/clients/:id` - Get client details
-- `POST /api/products` - Create product
-- `GET /api/products` - List products
+## Project Structure
 
-See API documentation for complete endpoint details.
+\`\`\`
+├── app/                    # Next.js app directory
+│   ├── page.tsx           # Landing page
+│   ├── layout.tsx         # Root layout
+│   ├── deliveries/        # Delivery management
+│   ├── maintenance/       # Maintenance scheduling
+│   └── schedule/          # Unified calendar
+├── components/            # Reusable components
+│   ├── auth/             # Authentication forms
+│   ├── dashboard/        # Dashboard components
+│   ├── clients/          # Client management
+│   ├── products/         # Product catalog
+│   ├── orders/           # Order processing
+│   ├── delivery/         # Delivery scheduling
+│   ├── maintenance/      # Maintenance planning
+│   ├── visits/           # Visit logging
+│   └── ui/               # Base UI components
+└── backend/              # Express.js API (separate deployment)
+\`\`\`
+
+## Design System
+
+The application uses a professional design system with:
+- **Colors**: Amber/golden primary palette with neutral grays
+- **Typography**: Playfair Display (headings) + Source Sans Pro (body)
+- **Layout**: Mobile-first responsive design
+- **Components**: Consistent spacing and interaction patterns
+
+## Development
+
+The system is built with modern development practices including TypeScript for type safety, comprehensive form validation, error boundaries for robust error handling, and responsive design for all screen sizes.
