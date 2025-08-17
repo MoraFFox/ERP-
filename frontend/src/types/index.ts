@@ -28,7 +28,7 @@ export interface RegisterData {
 export interface Client {
   id: string
   name: string
-  email: string
+  email?: string
   phone?: string
   address?: string
   city?: string
@@ -38,7 +38,7 @@ export interface Client {
   website?: string
   industry?: string
   companySize?: string
-  status: "ACTIVE" | "INACTIVE" | "PROSPECT" | "CHURNED"
+  status?: "ACTIVE" | "INACTIVE" | "PROSPECT" | "CHURNED"
   notes?: string
   createdAt: string
   updatedAt: string
