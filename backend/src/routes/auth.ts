@@ -147,10 +147,11 @@ router.post('/login', asyncHandler(async (req, res) => {
             message: 'Login successful'
         });
     } catch (error) {
-        console.error('Login error:', error);
+        console.error('Login error details:', error);
         res.status(500).json({
             success: false,
-            message: 'Login failed. Please try again.'
+            message: 'Login failed. Please try again.',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 }));
