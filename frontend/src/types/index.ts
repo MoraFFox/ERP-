@@ -20,10 +20,9 @@ export interface LoginCredentials {
 
 export interface RegisterData {
   email: string
+  username: string
   password: string
-  firstName: string
-  lastName: string
-  roleId?: string
+  fullName?: string
 }
 
 export interface Client {
