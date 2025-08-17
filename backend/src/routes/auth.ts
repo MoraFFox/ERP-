@@ -10,7 +10,15 @@ router.post('/register', validateUser, asyncHandler(async (req, res) => {
     const user = await prisma.user.create({
         data: req.body,
     });
-    res.status(201).json(user);
+    res.status(201).json({
+        success: true,
+        data: {
+            user,
+            accessToken: 'dummy-access-token',
+            refreshToken: 'dummy-refresh-token'
+        },
+        message: 'User registered successfully'
+    });
 }));
 
 router.post('/login', asyncHandler(async (req, res) => {
@@ -20,12 +28,23 @@ router.post('/login', asyncHandler(async (req, res) => {
     });
 
     if (!user) {
-        res.status(401).json({ message: 'Invalid credentials' });
+        res.status(401).json({
+            success: false,
+            message: 'Invalid credentials'
+        });
         return;
     }
 
     // TODO: Add password verification and JWT token generation
-    res.status(200).json({ token: 'dummy-token' });
+    res.status(200).json({
+        success: true,
+        data: {
+            user,
+            accessToken: 'dummy-access-token',
+            refreshToken: 'dummy-refresh-token'
+        },
+        message: 'Login successful'
+    });
 }));
 
 export default router;
