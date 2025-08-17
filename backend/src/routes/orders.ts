@@ -145,10 +145,16 @@ router.post('/', asyncHandler(async (req, res) => {
             }
         });
 
+        // Map orderItems to items for frontend consistency
+        const mappedOrder = {
+            ...order,
+            items: order.orderItems
+        };
+
         res.status(201).json({
             success: true,
             data: {
-                order,
+                order: mappedOrder,
                 orderId: order.id
             },
             message: 'Order created successfully'
