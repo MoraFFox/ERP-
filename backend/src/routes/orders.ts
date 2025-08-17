@@ -87,7 +87,7 @@ router.get('/', asyncHandler(async (req, res) => {
 
 // Create new order
 router.post('/', asyncHandler(async (req, res) => {
-    const { clientId, items, deliveryInfo, receiverContact, notes } = req.body;
+    const { clientId, items, deliveryInfo, receiverContact, notes, orderDate } = req.body;
 
     try {
         // Calculate total amount
