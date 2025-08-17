@@ -41,6 +41,7 @@ model Product {
   id String @id @default(uuid())
   name String
   description String?
+  category String?
   price Decimal
   stock Int @default(0)
   createdAt DateTime @default(now())
