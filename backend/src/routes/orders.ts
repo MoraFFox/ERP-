@@ -184,9 +184,15 @@ router.get('/:id', asyncHandler(async (req, res) => {
         return;
     }
 
+    // Map orderItems to items for frontend consistency
+    const mappedOrder = {
+        ...order,
+        items: order.orderItems
+    };
+
     res.json({
         success: true,
-        data: order,
+        data: mappedOrder,
         message: 'Order fetched successfully'
     });
 }));
