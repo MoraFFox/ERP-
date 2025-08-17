@@ -8,7 +8,11 @@ const prisma = new PrismaClient();
 // Get all products
 router.get('/', asyncHandler(async (req, res) => {
     const products = await prisma.product.findMany();
-    res.json(products);
+    res.json({
+        success: true,
+        data: products,
+        message: 'Products fetched successfully'
+    });
 }));
 
 // Create new product
@@ -16,7 +20,11 @@ router.post('/', asyncHandler(async (req, res) => {
     const product = await prisma.product.create({
         data: req.body,
     });
-    res.status(201).json(product);
+    res.status(201).json({
+        success: true,
+        data: product,
+        message: 'Product created successfully'
+    });
 }));
 
 // Get all unique categories (must come before /:id route)
