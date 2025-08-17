@@ -7,6 +7,7 @@ import rateLimit from 'express-rate-limit';
 import authRoutes from './routes/auth';
 import clientRoutes from './routes/clients';
 import productRoutes from './routes/products';
+import orderRoutes from './routes/orders';
 import errorHandler from './middleware/errorHandler';
 
 const prisma = new PrismaClient();
