@@ -36,10 +36,17 @@ model Client {
   email String?
   phone String?
   address String?
+  city String?
+  state String?
+  zipCode String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Relations
   orders Order[]
+  maintenanceVisits MaintenanceVisit[]
+  visitsCalls VisitCall[]
+
   @@map("clients")
 }
 
@@ -53,7 +60,10 @@ model Product {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Relations
   orderItems OrderItem[]
+  maintenanceVisits MaintenanceVisit[]
+
   @@map("products")
 }
 
@@ -66,8 +76,10 @@ model Order {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Relations
   client Client @relation(fields: [clientId], references: [id])
   orderItems OrderItem[]
+  deliverySchedules DeliverySchedule[]
 
   @@map("orders")
 }
