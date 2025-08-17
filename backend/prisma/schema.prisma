@@ -17,9 +17,15 @@ model User {
   username String @unique
   password String
   fullName String?
+  firstName String?
+  lastName String?
   role String @default("USER")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relations
+  maintenanceVisits MaintenanceVisit[] @relation("TechnicianVisits")
+  visitsCalls       VisitCall[] @relation("SalespersonVisits")
 
   @@map("users")
 }
@@ -79,4 +85,68 @@ model OrderItem {
   product Product @relation(fields: [productId], references: [id])
 
   @@map("order_items")
+}
+
+// Maintenance Management
+model MaintenanceVisit {
+  id            String            @id @default(uuid())
+  clientId      String
+  productId     String?
+  technicianId  String
+  visitType     String
+  status        String @default("SCHEDULED")
+  scheduledDate DateTime
+  completedDate DateTime?
+  duration      Int?              // Duration in minutes
+  description   String
+  findings      String?
+  actions       String?
+  cost          Decimal?
+  location      String?           // JSON string for lat/lng coordinates
+  notes         String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  client      Client @relation(fields: [clientId], references: [id])
+  product     Product? @relation(fields: [productId], references: [id])
+  technician  User @relation("TechnicianVisits", fields: [technicianId], references: [id])
+
+  @@map("maintenance_visits")
+}
+
+// Sales & Communication
+model VisitCall {
+  id            String     @id @default(uuid())
+  clientId      String
+  salespersonId String
+  type          String
+  purpose       String
+  outcome       String?
+  followUpDate  DateTime?
+  distanceKm    Decimal?
+  notes         String?
+  visitDate     DateTime   @default(now())
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  client      Client @relation(fields: [clientId], references: [id])
+  salesperson User @relation("SalespersonVisits", fields: [salespersonId], references: [id])
+
+  @@map("visits_calls")
+}
+
+// Delivery Management
+model DeliverySchedule {
+  id             String           @id @default(uuid())
+  orderId        String
+  deliveryDate   DateTime
+  assignedDriver String?
+  status         String           @default("SCHEDULED")
+  notes          String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@map("delivery_schedules")
 }
