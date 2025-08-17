@@ -34,7 +34,7 @@ export const RegisterPage = () => {
       // Transform form data to match backend API
       const registerData = {
         email: data.email,
-        username: data.email.split('@')[0], // Use email prefix as username
+        username: `${data.email.split('@')[0]}_${Date.now()}`, // Use email prefix with timestamp to ensure uniqueness
         password: data.password,
         fullName: `${data.firstName} ${data.lastName}`.trim()
       }
