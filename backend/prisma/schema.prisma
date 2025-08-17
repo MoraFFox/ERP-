@@ -53,7 +53,7 @@ model Product {
 model Order {
   id String @id @default(uuid())
   clientId String
-  status OrderStatus @default(PENDING)
+  status String @default("PENDING")
   totalAmount Decimal
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
