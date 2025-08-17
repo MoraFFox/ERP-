@@ -305,9 +305,15 @@ router.put('/:id/status', asyncHandler(async (req, res) => {
         }
     });
 
+    // Map orderItems to items for frontend consistency
+    const mappedOrder = {
+        ...order,
+        items: order.orderItems
+    };
+
     res.json({
         success: true,
-        data: order,
+        data: mappedOrder,
         message: 'Order status updated successfully'
     });
 }));
