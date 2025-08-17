@@ -186,6 +186,14 @@ function handleApiError(error: AxiosError): Error {
   let message = "An unexpected error occurred"
   let code = "UNKNOWN_ERROR"
 
+  // Log the full error for debugging
+  console.error("Full API Error:", {
+    message: error.message,
+    response: error.response,
+    request: error.request,
+    config: error.config
+  })
+
   if (error.response) {
     // Server responded with error status
     const status = error.response.status
