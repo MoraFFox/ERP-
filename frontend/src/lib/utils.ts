@@ -23,9 +23,15 @@ export function formatDate(date: string | Date | null | undefined) {
   }).format(dateObj)
 }
 
-export function formatCurrency(amount: number) {
+export function formatCurrency(amount: number | string) {
+  const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount
+
+  if (isNaN(numAmount)) {
+    return "$0.00"
+  }
+
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-  }).format(amount)
+  }).format(numAmount)
 }
