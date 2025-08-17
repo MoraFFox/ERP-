@@ -8,7 +8,11 @@ const prisma = new PrismaClient();
 // Get all clients
 router.get('/', asyncHandler(async (req, res) => {
     const clients = await prisma.client.findMany();
-    res.json(clients);
+    res.json({
+        success: true,
+        data: clients,
+        message: 'Clients fetched successfully'
+    });
 }));
 
 // Create new client
@@ -16,7 +20,11 @@ router.post('/', asyncHandler(async (req, res) => {
     const client = await prisma.client.create({
         data: req.body,
     });
-    res.status(201).json(client);
+    res.status(201).json({
+        success: true,
+        data: client,
+        message: 'Client created successfully'
+    });
 }));
 
 // Get client by ID
