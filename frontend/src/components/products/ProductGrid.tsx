@@ -170,22 +170,22 @@ export const ProductGrid = ({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="text-sm text-gray-700">
-                Page {pagination.page} of {pagination.totalPages}
+                Page {pagination?.page || 1} of {pagination?.totalPages || 1}
               </div>
               <div className="flex space-x-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handlePageChange(pagination.page - 1)}
-                  disabled={pagination.page <= 1}
+                  onClick={() => handlePageChange((pagination?.page || 1) - 1)}
+                  disabled={(pagination?.page || 1) <= 1}
                 >
                   Previous
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handlePageChange(pagination.page + 1)}
-                  disabled={pagination.page >= pagination.totalPages}
+                  onClick={() => handlePageChange((pagination?.page || 1) + 1)}
+                  disabled={(pagination?.page || 1) >= (pagination?.totalPages || 1)}
                 >
                   Next
                 </Button>
