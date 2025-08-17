@@ -33,10 +33,17 @@ router.get('/:id', asyncHandler(async (req, res) => {
         where: { id: req.params.id },
     });
     if (!client) {
-        res.status(404).json({ message: 'Client not found' });
+        res.status(404).json({
+            success: false,
+            message: 'Client not found'
+        });
         return;
     }
-    res.json(client);
+    res.json({
+        success: true,
+        data: client,
+        message: 'Client fetched successfully'
+    });
 }));
 
 // Update client
@@ -45,7 +52,11 @@ router.put('/:id', asyncHandler(async (req, res) => {
         where: { id: req.params.id },
         data: req.body,
     });
-    res.json(client);
+    res.json({
+        success: true,
+        data: client,
+        message: 'Client updated successfully'
+    });
 }));
 
 // Delete client
@@ -53,7 +64,10 @@ router.delete('/:id', asyncHandler(async (req, res) => {
     await prisma.client.delete({
         where: { id: req.params.id },
     });
-    res.status(204).send();
+    res.json({
+        success: true,
+        message: 'Client deleted successfully'
+    });
 }));
 
 export default router;
