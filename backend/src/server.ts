@@ -33,6 +33,7 @@ app.use(limiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Health check endpoint
 app.get('/api/health', (_, res) => {
