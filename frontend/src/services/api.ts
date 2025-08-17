@@ -74,6 +74,7 @@ api.interceptors.response.use(
         status: error.response?.status,
         message: error.message,
         data: error.response?.data,
+        error: error
       })
     }
 
