@@ -68,12 +68,18 @@ router.get('/', asyncHandler(async (req, res) => {
         prisma.order.count({ where })
     ]);
 
+    // Map orderItems to items for frontend consistency
+    const mappedOrders = orders.map(order => ({
+        ...order,
+        items: order.orderItems
+    }));
+
     const totalPages = Math.ceil(total / take);
 
     res.json({
         success: true,
         data: {
-            items: orders,
+            items: mappedOrders,
             pagination: {
                 page: Number(page),
                 limit: take,
