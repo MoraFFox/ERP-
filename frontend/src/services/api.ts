@@ -187,12 +187,14 @@ function handleApiError(error: AxiosError): Error {
   let code = "UNKNOWN_ERROR"
 
   // Log the full error for debugging
-  console.error("Full API Error:", {
-    message: error.message,
-    response: error.response,
-    request: error.request,
-    config: error.config
-  })
+  console.error("Full API Error Details:")
+  console.error("Message:", error.message)
+  console.error("Status:", error.response?.status)
+  console.error("Status Text:", error.response?.statusText)
+  console.error("Response Data:", JSON.stringify(error.response?.data, null, 2))
+  console.error("Request URL:", error.config?.url)
+  console.error("Request Method:", error.config?.method)
+  console.error("Request Data:", JSON.stringify(error.config?.data, null, 2))
 
   if (error.response) {
     // Server responded with error status
