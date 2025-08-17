@@ -186,10 +186,12 @@ export const ClientList = ({ onClientSelect, onClientEdit }: ClientListProps) =>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <div className="flex items-center text-sm text-gray-600">
-                  <Mail className="mr-2 h-4 w-4" />
-                  {client.email}
-                </div>
+                {client.email && (
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Mail className="mr-2 h-4 w-4" />
+                    {client.email}
+                  </div>
+                )}
 
                 {client.phone && (
                   <div className="flex items-center text-sm text-gray-600">
