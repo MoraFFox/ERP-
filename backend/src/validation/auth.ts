@@ -14,7 +14,11 @@ export const validateUser = (req: Request, res: Response, next: NextFunction) =>
         next();
     } catch (error) {
         if (error instanceof z.ZodError) {
-            res.status(400).json({ errors: error.errors });
+            res.status(400).json({
+                success: false,
+                message: 'Validation failed',
+                errors: error.errors.map(err => `${err.path.join('.')}: ${err.message}`)
+            });
         } else {
             next(error);
         }
