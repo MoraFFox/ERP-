@@ -11,6 +11,7 @@ import orderRoutes from './routes/orders';
 import maintenanceRoutes from './routes/maintenance';
 import deliveryRoutes from './routes/deliveries';
 import visitCallRoutes from './routes/visit-calls';
+import testRoutes from './routes/test';
 import errorHandler from './middleware/errorHandler';
 import { authenticateToken } from './middleware/auth';
 
@@ -35,6 +36,7 @@ app.use(limiter);
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/test', testRoutes); // Test routes without authentication
 app.use('/api/clients', authenticateToken, clientRoutes);
 app.use('/api/products', authenticateToken, productRoutes);
 app.use('/api/orders', authenticateToken, orderRoutes);
