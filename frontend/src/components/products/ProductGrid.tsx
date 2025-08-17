@@ -165,7 +165,7 @@ export const ProductGrid = ({
       )}
 
       {/* Pagination */}
-      {pagination.totalPages > 1 && (
+      {(pagination?.totalPages || 0) > 1 && (
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
