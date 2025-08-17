@@ -4,7 +4,8 @@
   "description": "AI-Powered ERP System",
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "dev": "cd frontend && npm run dev",
+    "dev:next": "next dev",
     "lint": "next lint",
     "start": "next start",
     "type-check": "tsc --noEmit"
