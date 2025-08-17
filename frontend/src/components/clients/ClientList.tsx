@@ -170,7 +170,7 @@ export const ClientList = ({ onClientSelect, onClientEdit }: ClientListProps) =>
                 <div>
                   <CardTitle className="text-lg">{client.name}</CardTitle>
                   <div className="flex items-center mt-1">
-                    {getStatusBadge(client.status)}
+                    {client.status && getStatusBadge(client.status)}
                     {client.industry && <span className="ml-2 text-sm text-gray-500">• {client.industry}</span>}
                   </div>
                 </div>
