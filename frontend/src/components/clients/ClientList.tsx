@@ -56,8 +56,13 @@ export const ClientList = ({ onClientSelect, onClientEdit }: ClientListProps) =>
       setLoading(true)
       setError("")
       const response = await clientService.getClients(filters)
-      setClients(response.data.items)
-      setPagination(response.data.pagination)
+      setClients(response.data?.items || [])
+      setPagination(response.data?.pagination || {
+        page: 1,
+        limit: 10,
+        total: 0,
+        totalPages: 0
+      })
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch clients")
     } finally {
