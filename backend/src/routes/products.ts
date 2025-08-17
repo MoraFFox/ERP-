@@ -54,10 +54,17 @@ router.get('/:id', asyncHandler(async (req, res) => {
         where: { id: req.params.id },
     });
     if (!product) {
-        res.status(404).json({ message: 'Product not found' });
+        res.status(404).json({
+            success: false,
+            message: 'Product not found'
+        });
         return;
     }
-    res.json(product);
+    res.json({
+        success: true,
+        data: product,
+        message: 'Product fetched successfully'
+    });
 }));
 
 // Update product
@@ -66,7 +73,11 @@ router.put('/:id', asyncHandler(async (req, res) => {
         where: { id: req.params.id },
         data: req.body,
     });
-    res.json(product);
+    res.json({
+        success: true,
+        data: product,
+        message: 'Product updated successfully'
+    });
 }));
 
 // Delete product
@@ -74,7 +85,10 @@ router.delete('/:id', asyncHandler(async (req, res) => {
     await prisma.product.delete({
         where: { id: req.params.id },
     });
-    res.status(204).send();
+    res.json({
+        success: true,
+        message: 'Product deleted successfully'
+    });
 }));
 
 export default router;
