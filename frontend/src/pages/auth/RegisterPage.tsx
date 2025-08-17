@@ -31,7 +31,14 @@ export const RegisterPage = () => {
       setIsLoading(true)
       setError("")
 
-      const { confirmPassword, ...registerData } = data
+      // Transform form data to match backend API
+      const registerData = {
+        email: data.email,
+        username: data.email.split('@')[0], // Use email prefix as username
+        password: data.password,
+        fullName: `${data.firstName} ${data.lastName}`.trim()
+      }
+
       const response = await authService.register(registerData)
 
       login(response.user, {
