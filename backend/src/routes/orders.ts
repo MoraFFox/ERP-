@@ -187,7 +187,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
 
 // Update order
 router.put('/:id', asyncHandler(async (req, res) => {
-    const { clientId, items, deliveryInfo, receiverContact, notes } = req.body;
+    const { clientId, items, deliveryInfo, receiverContact, notes, orderDate } = req.body;
 
     try {
         // If items are being updated, recalculate total
