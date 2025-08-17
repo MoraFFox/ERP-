@@ -49,8 +49,13 @@ export const ProductGrid = ({
       setLoading(true)
       setError("")
       const response = await productService.getProducts(filters)
-      setProducts(response.data.items)
-      setPagination(response.data.pagination)
+      setProducts(response.data?.items || [])
+      setPagination(response.data?.pagination || {
+        page: 1,
+        limit: 12,
+        total: 0,
+        totalPages: 0
+      })
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch products")
     } finally {
