@@ -383,7 +383,7 @@ router.get('/calendar/data', asyncHandler(async (req, res) => {
         driver: delivery.assignedDriver || 'Unassigned',
         client: delivery.order.client.name,
         address: `${delivery.order.client.address}, ${delivery.order.client.city}, ${delivery.order.client.state}`,
-        orderNumber: delivery.order.orderNumber,
+        orderId: delivery.order.id,
         itemCount: delivery.order.orderItems.length,
         notes: delivery.notes
     }));

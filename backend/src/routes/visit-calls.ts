@@ -206,8 +206,8 @@ router.get('/client/:clientId', asyncHandler(async (req, res) => {
             summary: {
                 totalVisits: visits.length,
                 totalDistance: totalDistance._sum.distanceKm || 0,
-                averageDistance: totalDistance._count.distanceKm > 0 ? 
-                    (totalDistance._sum.distanceKm || 0) / totalDistance._count.distanceKm : 0
+                averageDistance: totalDistance._count.distanceKm > 0 ?
+                Number(totalDistance._sum.distanceKm || 0) / totalDistance._count.distanceKm : 0
             }
         }
     });
