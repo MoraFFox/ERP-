@@ -39,11 +39,9 @@ api.interceptors.request.use(
 
     // Log request in development
     if (process.env.NODE_ENV === "development") {
-      console.log(`🚀 API Request: ${config.method?.toUpperCase()} ${config.url}`, {
-        data: config.data,
-        params: config.params,
-        headers: config.headers
-      })
+      console.log(`🚀 API Request: ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`)
+      console.log('Request Data:', JSON.stringify(config.data, null, 2))
+      console.log('Request Headers:', config.headers)
     }
 
     return config
