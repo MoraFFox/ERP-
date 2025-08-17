@@ -42,7 +42,7 @@ export interface Client {
   notes?: string
   createdAt: string
   updatedAt: string
-  createdBy: {
+  createdBy?: {
     id: string
     firstName: string
     lastName: string
