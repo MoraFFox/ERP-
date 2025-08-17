@@ -1,13 +1,11 @@
 export interface User {
   id: string
   email: string
-  firstName: string
-  lastName: string
-  role: {
-    id: string
-    name: string
-    permissions: string[]
-  }
+  username: string
+  fullName?: string
+  role: string
+  createdAt: string
+  updatedAt: string
 }
 
 export interface AuthTokens {
