@@ -163,7 +163,7 @@ export const ClientList = ({ onClientSelect, onClientEdit }: ClientListProps) =>
 
       {/* Client List */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {clients.map((client) => (
+        {clients?.map((client) => (
           <Card key={client.id} className="hover:shadow-md transition-shadow">
             <CardHeader>
               <div className="flex items-start justify-between">
