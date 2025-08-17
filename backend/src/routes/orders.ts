@@ -124,6 +124,7 @@ router.post('/', asyncHandler(async (req, res) => {
                 clientId,
                 totalAmount,
                 status: 'PENDING',
+                orderDate: orderDate ? new Date(orderDate) : new Date(),
                 orderItems: {
                     create: orderItemsData
                 }
