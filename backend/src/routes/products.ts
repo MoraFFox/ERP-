@@ -69,25 +69,4 @@ router.delete('/:id', asyncHandler(async (req, res) => {
     res.status(204).send();
 }));
 
-// Get all unique categories
-router.get('/categories', asyncHandler(async (req, res) => {
-    const products = await prisma.product.findMany({
-        select: {
-            category: true
-        },
-        where: {
-            category: {
-                not: null
-            }
-        }
-    });
-
-    const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
-    res.json({
-        success: true,
-        data: categories,
-        message: 'Categories fetched successfully'
-    });
-}));
-
 export default router;
