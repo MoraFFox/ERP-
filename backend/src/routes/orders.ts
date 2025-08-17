@@ -193,6 +193,10 @@ router.put('/:id', asyncHandler(async (req, res) => {
         // If items are being updated, recalculate total
         let updateData: any = { clientId };
 
+        if (orderDate) {
+            updateData.orderDate = new Date(orderDate);
+        }
+
         if (items && items.length > 0) {
             // Delete existing order items
             await prisma.orderItem.deleteMany({
