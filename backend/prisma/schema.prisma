@@ -56,6 +56,7 @@ model Order {
   clientId String
   status String @default("PENDING")
   totalAmount Decimal
+  orderDate DateTime @default(now())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
