@@ -145,6 +145,19 @@ router.post('/', asyncHandler(async (req, res) => {
             }
         });
 
+        // Automatically create delivery schedule
+        const deliveryDate = new Date(order.orderDate);
+        deliveryDate.setDate(deliveryDate.getDate() + 1); // Default: deliver next day
+
+        await prisma.deliverySchedule.create({
+            data: {
+                orderId: order.id,
+                deliveryDate,
+                status: 'SCHEDULED',
+                notes: 'Automatically scheduled delivery'
+            }
+        });
+
         // Map orderItems to items for frontend consistency
         const mappedOrder = {
             ...order,
