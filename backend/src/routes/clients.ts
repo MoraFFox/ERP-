@@ -5,12 +5,55 @@ import { PrismaClient } from '@prisma/client';
 const router = Router();
 const prisma = new PrismaClient();
 
-// Get all clients
+// Get all clients with pagination and filtering
 router.get('/', asyncHandler(async (req, res) => {
-    const clients = await prisma.client.findMany();
+    const {
+        search,
+        status,
+        companySize,
+        industry,
+        page = 1,
+        limit = 10,
+        sortBy = 'createdAt',
+        sortOrder = 'desc'
+    } = req.query;
+
+    const skip = (Number(page) - 1) * Number(limit);
+    const take = Number(limit);
+
+    // Build where conditions
+    const where: any = {};
+
+    if (search) {
+        where.OR = [
+            { name: { contains: search, mode: 'insensitive' } },
+            { email: { contains: search, mode: 'insensitive' } }
+        ];
+    }
+
+    const [clients, total] = await Promise.all([
+        prisma.client.findMany({
+            where,
+            skip,
+            take,
+            orderBy: { [sortBy as string]: sortOrder }
+        }),
+        prisma.client.count({ where })
+    ]);
+
+    const totalPages = Math.ceil(total / take);
+
     res.json({
         success: true,
-        data: clients,
+        data: {
+            items: clients,
+            pagination: {
+                page: Number(page),
+                limit: take,
+                total,
+                totalPages
+            }
+        },
         message: 'Clients fetched successfully'
     });
 }));
