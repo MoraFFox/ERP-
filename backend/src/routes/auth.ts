@@ -106,9 +106,11 @@ router.post('/login', asyncHandler(async (req, res) => {
         }
 
         // Find user by email
+        console.log('Attempting to find user with email:', email);
         const user = await prisma.user.findUnique({
             where: { email },
         });
+        console.log('User found:', user ? 'Yes' : 'No');
 
         if (!user) {
             res.status(401).json({
