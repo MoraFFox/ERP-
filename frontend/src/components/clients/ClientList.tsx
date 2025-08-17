@@ -222,7 +222,8 @@ export const ClientList = ({ onClientSelect, onClientEdit }: ClientListProps) =>
                 )}
 
                 <div className="pt-2 text-xs text-gray-500">
-                  Created {formatDate(client.createdAt)} by {client.createdBy.firstName} {client.createdBy.lastName}
+                  Created {formatDate(client.createdAt)}
+                  {client.createdBy && ` by ${client.createdBy.firstName} ${client.createdBy.lastName}`}
                 </div>
               </div>
             </CardContent>
