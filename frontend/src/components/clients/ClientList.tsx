@@ -250,8 +250,8 @@ export const ClientList = ({ onClientSelect, onClientEdit }: ClientListProps) =>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="text-sm text-gray-700">
-                Showing {(pagination.page - 1) * pagination.limit + 1} to{" "}
-                {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} clients
+                Showing {((pagination?.page || 1) - 1) * (pagination?.limit || 10) + 1} to{" "}
+                {Math.min((pagination?.page || 1) * (pagination?.limit || 10), pagination?.total || 0)} of {pagination?.total || 0} clients
               </div>
               <div className="flex space-x-2">
                 <Button
