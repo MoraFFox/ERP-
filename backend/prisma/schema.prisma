@@ -78,15 +78,3 @@ model OrderItem {
 
   @@map("order_items")
 }
-
-enum Role {
-  USER
-  ADMIN
-}
-
-enum OrderStatus {
-  PENDING
-  PROCESSING
-  COMPLETED
-  CANCELLED
-}
