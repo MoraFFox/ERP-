@@ -268,9 +268,15 @@ router.put('/:id', asyncHandler(async (req, res) => {
             }
         });
 
+        // Map orderItems to items for frontend consistency
+        const mappedOrder = {
+            ...order,
+            items: order.orderItems
+        };
+
         res.json({
             success: true,
-            data: order,
+            data: mappedOrder,
             message: 'Order updated successfully'
         });
     } catch (error) {
