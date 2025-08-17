@@ -13,7 +13,11 @@ export const useApiError = () => {
 
   const handleError = useCallback(
     (error: ApiError, customMessage?: string) => {
-      console.error("API Error:", error)
+      console.error("API Error Details:")
+      console.error("Message:", error.message)
+      console.error("Code:", error.code)
+      console.error("Original Error:", error.originalError)
+      console.error("Full Error Object:", JSON.stringify(error, Object.getOwnPropertyNames(error), 2))
 
       let title = "Error"
       let message = customMessage || error.message || "An unexpected error occurred"
