@@ -71,12 +71,12 @@ api.interceptors.response.use(
 
     // Log error in development
     if (process.env.NODE_ENV === "development") {
-      console.error(`❌ API Error: ${error.config?.method?.toUpperCase()} ${error.config?.url}`, {
-        status: error.response?.status,
-        message: error.message,
-        data: error.response?.data,
-        error: error
-      })
+      console.error(`❌ API Error: ${error.config?.method?.toUpperCase()} ${error.config?.url}`)
+      console.error('Status:', error.response?.status)
+      console.error('Message:', error.message)
+      console.error('Response Data:', JSON.stringify(error.response?.data, null, 2))
+      console.error('Error Code:', error.code)
+      console.error('Full Error:', error)
     }
 
     // Handle token refresh for 401 errors
