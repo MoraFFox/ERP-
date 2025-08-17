@@ -197,20 +197,20 @@ export const OrderList = ({ onOrderSelect, onOrderEdit }: OrderListProps) => {
               <div className="space-y-3">
                 {/* Order Items */}
                 <div>
-                  <h4 className="text-sm font-medium mb-2">Items ({order.items.length})</h4>
+                  <h4 className="text-sm font-medium mb-2">Items ({order.items?.length || 0})</h4>
                   <div className="space-y-1">
-                    {order.items.slice(0, 3).map((item, index) => (
+                    {order.items?.slice(0, 3).map((item, index) => (
                       <div key={index} className="flex items-center justify-between text-sm">
                         <div className="flex items-center">
                           <Package className="mr-2 h-3 w-3 text-gray-400" />
-                          <span>{item.product.name}</span>
+                          <span>{item.product?.name || 'Unknown Product'}</span>
                           <span className="text-gray-500 ml-2">× {item.quantity}</span>
                         </div>
-                        <span className="font-medium">{formatCurrency(item.totalPrice)}</span>
+                        <span className="font-medium">{formatCurrency(item.totalPrice || (Number(item.unitPrice) * item.quantity))}</span>
                       </div>
-                    ))}
-                    {order.items.length > 3 && (
-                      <div className="text-sm text-gray-500">+{order.items.length - 3} more items</div>
+                    )) || []}
+                    {(order.items?.length || 0) > 3 && (
+                      <div className="text-sm text-gray-500">+{(order.items?.length || 0) - 3} more items</div>
                     )}
                   </div>
                 </div>
