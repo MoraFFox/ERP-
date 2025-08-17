@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 import { validateUser } from '../validation/auth';
 
 const router = Router();
