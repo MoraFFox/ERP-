@@ -109,10 +109,10 @@ export const ProductGrid = ({
       {/* View Mode Toggle and Results Count */}
       <div className="flex items-center justify-between">
         <div className="text-sm text-gray-600">
-          {pagination.total > 0 ? (
+          {(pagination?.total || 0) > 0 ? (
             <>
-              Showing {(pagination.page - 1) * pagination.limit + 1} to{" "}
-              {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} products
+              Showing {((pagination?.page || 1) - 1) * (pagination?.limit || 12) + 1} to{" "}
+              {Math.min((pagination?.page || 1) * (pagination?.limit || 12), pagination?.total || 0)} of {pagination?.total || 0} products
             </>
           ) : (
             "No products found"
