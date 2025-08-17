@@ -19,6 +19,27 @@ router.post('/', asyncHandler(async (req, res) => {
     res.status(201).json(product);
 }));
 
+// Get all unique categories (must come before /:id route)
+router.get('/categories', asyncHandler(async (req, res) => {
+    const products = await prisma.product.findMany({
+        select: {
+            category: true
+        },
+        where: {
+            category: {
+                not: null
+            }
+        }
+    });
+
+    const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
+    res.json({
+        success: true,
+        data: categories,
+        message: 'Categories fetched successfully'
+    });
+}));
+
 // Get product by ID
 router.get('/:id', asyncHandler(async (req, res) => {
     const product = await prisma.product.findUnique({
