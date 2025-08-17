@@ -26,8 +26,8 @@ router.get('/', asyncHandler(async (req, res) => {
 
     if (search) {
         where.OR = [
-            { name: { contains: search, mode: 'insensitive' } },
-            { email: { contains: search, mode: 'insensitive' } }
+            { name: { contains: search } },
+            { email: { contains: search } }
         ];
     }
 
