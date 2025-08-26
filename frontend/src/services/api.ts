@@ -1,7 +1,7 @@
 import axios, { type AxiosError, type AxiosResponse, type AxiosRequestConfig } from "axios"
 import { useAuthStore } from "@/store/authStore"
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000"
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ""
 
 // Create axios instance
 export const api = axios.create({
@@ -39,10 +39,9 @@ api.interceptors.request.use(
 
     // Log request in development
     if (process.env.NODE_ENV === "development") {
-      console.log(`🚀 API Request: ${config.method?.toUpperCase()} ${config.url}`, {
-        data: config.data,
-        params: config.params,
-      })
+      console.log(`🚀 API Request: ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`)
+      console.log('Request Data:', JSON.stringify(config.data, null, 2))
+      console.log('Request Headers:', config.headers)
     }
 
     return config
@@ -70,11 +69,12 @@ api.interceptors.response.use(
 
     // Log error in development
     if (process.env.NODE_ENV === "development") {
-      console.error(`❌ API Error: ${error.config?.method?.toUpperCase()} ${error.config?.url}`, {
-        status: error.response?.status,
-        message: error.message,
-        data: error.response?.data,
-      })
+      console.error(`❌ API Error: ${error.config?.method?.toUpperCase()} ${error.config?.url}`)
+      console.error('Status:', error.response?.status)
+      console.error('Message:', error.message)
+      console.error('Response Data:', JSON.stringify(error.response?.data, null, 2))
+      console.error('Error Code:', error.code)
+      console.error('Full Error:', error)
     }
 
     // Handle token refresh for 401 errors
@@ -85,7 +85,7 @@ api.interceptors.response.use(
 
       if (tokens?.refreshToken) {
         try {
-          const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
+          const response = await axios.post(`${API_BASE_URL}/api/auth/refresh`, {
             refreshToken: tokens.refreshToken,
           })
 
@@ -183,6 +183,16 @@ export const apiRequest = {
 function handleApiError(error: AxiosError): Error {
   let message = "An unexpected error occurred"
   let code = "UNKNOWN_ERROR"
+
+  // Log the full error for debugging
+  console.error("Full API Error Details:")
+  console.error("Message:", error.message)
+  console.error("Status:", error.response?.status)
+  console.error("Status Text:", error.response?.statusText)
+  console.error("Response Data:", JSON.stringify(error.response?.data, null, 2))
+  console.error("Request URL:", error.config?.url)
+  console.error("Request Method:", error.config?.method)
+  console.error("Request Data:", JSON.stringify(error.config?.data, null, 2))
 
   if (error.response) {
     // Server responded with error status

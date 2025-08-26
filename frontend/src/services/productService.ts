@@ -79,8 +79,11 @@ export const productService = {
 
   async getCategories(): Promise<string[]> {
     try {
-      const response = await apiRequest.get("/api/products/categories")
-      return response.data || []
+      const response: ApiResponse<string[]> = await apiRequest.get("/api/products/categories")
+      if (response.success && response.data) {
+        return response.data
+      }
+      return []
     } catch (error) {
       console.error("Failed to fetch categories:", error)
       return []

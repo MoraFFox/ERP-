@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -17,9 +17,15 @@ model User {
   username String @unique
   password String
   fullName String?
-  role Role @default(USER)
+  firstName String?
+  lastName String?
+  role String @default("USER")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relations
+  maintenanceVisits MaintenanceVisit[] @relation("TechnicianVisits")
+  visitsCalls       VisitCall[] @relation("SalespersonVisits")
 
   @@map("users")
 }
@@ -30,10 +36,17 @@ model Client {
   email String?
   phone String?
   address String?
+  city String?
+  state String?
+  zipCode String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Relations
   orders Order[]
+  maintenanceVisits MaintenanceVisit[]
+  visitsCalls VisitCall[]
+
   @@map("clients")
 }
 
@@ -41,25 +54,32 @@ model Product {
   id String @id @default(uuid())
   name String
   description String?
+  category String?
   price Decimal
   stock Int @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Relations
   orderItems OrderItem[]
+  maintenanceVisits MaintenanceVisit[]
+
   @@map("products")
 }
 
 model Order {
   id String @id @default(uuid())
   clientId String
-  status OrderStatus @default(PENDING)
+  status String @default("PENDING")
   totalAmount Decimal
+  orderDate DateTime @default(now())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Relations
   client Client @relation(fields: [clientId], references: [id])
   orderItems OrderItem[]
+  deliverySchedules DeliverySchedule[]
 
   @@map("orders")
 }
@@ -79,14 +99,66 @@ model OrderItem {
   @@map("order_items")
 }
 
-enum Role {
-  USER
-  ADMIN
+// Maintenance Management
+model MaintenanceVisit {
+  id            String            @id @default(uuid())
+  clientId      String
+  productId     String?
+  technicianId  String
+  visitType     String
+  status        String @default("SCHEDULED")
+  scheduledDate DateTime
+  completedDate DateTime?
+  duration      Int?              // Duration in minutes
+  description   String
+  findings      String?
+  actions       String?
+  cost          Decimal?
+  location      String?           // JSON string for lat/lng coordinates
+  notes         String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  client      Client @relation(fields: [clientId], references: [id])
+  product     Product? @relation(fields: [productId], references: [id])
+  technician  User @relation("TechnicianVisits", fields: [technicianId], references: [id])
+
+  @@map("maintenance_visits")
 }
 
-enum OrderStatus {
-  PENDING
-  PROCESSING
-  COMPLETED
-  CANCELLED
+// Sales & Communication
+model VisitCall {
+  id            String     @id @default(uuid())
+  clientId      String
+  salespersonId String
+  type          String
+  purpose       String
+  outcome       String?
+  followUpDate  DateTime?
+  distanceKm    Decimal?
+  notes         String?
+  visitDate     DateTime   @default(now())
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  client      Client @relation(fields: [clientId], references: [id])
+  salesperson User @relation("SalespersonVisits", fields: [salespersonId], references: [id])
+
+  @@map("visits_calls")
+}
+
+// Delivery Management
+model DeliverySchedule {
+  id             String           @id @default(uuid())
+  orderId        String
+  deliveryDate   DateTime
+  assignedDriver String?
+  status         String           @default("SCHEDULED")
+  notes          String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@map("delivery_schedules")
 }

@@ -9,7 +9,7 @@ interface AuthResponse {
 
 export const authService = {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const response: ApiResponse<AuthResponse> = await apiRequest.post("/auth/login", credentials)
+    const response: ApiResponse<AuthResponse> = await apiRequest.post("/api/auth/login", credentials)
 
     if (!response.success || !response.data) {
       throw new Error(response.message || "Login failed")
@@ -19,7 +19,7 @@ export const authService = {
   },
 
   async register(data: RegisterData): Promise<AuthResponse> {
-    const response: ApiResponse<AuthResponse> = await apiRequest.post("/auth/register", data)
+    const response: ApiResponse<AuthResponse> = await apiRequest.post("/api/auth/register", data)
 
     if (!response.success || !response.data) {
       throw new Error(response.message || "Registration failed")
@@ -29,7 +29,7 @@ export const authService = {
   },
 
   async refreshToken(refreshToken: string): Promise<AuthTokens> {
-    const response: ApiResponse<AuthTokens> = await apiRequest.post("/auth/refresh", {
+    const response: ApiResponse<AuthTokens> = await apiRequest.post("/api/auth/refresh", {
       refreshToken,
     })
 

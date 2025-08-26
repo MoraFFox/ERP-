@@ -49,8 +49,13 @@ export const ProductGrid = ({
       setLoading(true)
       setError("")
       const response = await productService.getProducts(filters)
-      setProducts(response.data.items)
-      setPagination(response.data.pagination)
+      setProducts(response.data?.items || [])
+      setPagination(response.data?.pagination || {
+        page: 1,
+        limit: 12,
+        total: 0,
+        totalPages: 0
+      })
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch products")
     } finally {
@@ -104,10 +109,10 @@ export const ProductGrid = ({
       {/* View Mode Toggle and Results Count */}
       <div className="flex items-center justify-between">
         <div className="text-sm text-gray-600">
-          {pagination.total > 0 ? (
+          {(pagination?.total || 0) > 0 ? (
             <>
-              Showing {(pagination.page - 1) * pagination.limit + 1} to{" "}
-              {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} products
+              Showing {((pagination?.page || 1) - 1) * (pagination?.limit || 12) + 1} to{" "}
+              {Math.min((pagination?.page || 1) * (pagination?.limit || 12), pagination?.total || 0)} of {pagination?.total || 0} products
             </>
           ) : (
             "No products found"
@@ -160,27 +165,27 @@ export const ProductGrid = ({
       )}
 
       {/* Pagination */}
-      {pagination.totalPages > 1 && (
+      {(pagination?.totalPages || 0) > 1 && (
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="text-sm text-gray-700">
-                Page {pagination.page} of {pagination.totalPages}
+                Page {pagination?.page || 1} of {pagination?.totalPages || 1}
               </div>
               <div className="flex space-x-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handlePageChange(pagination.page - 1)}
-                  disabled={pagination.page <= 1}
+                  onClick={() => handlePageChange((pagination?.page || 1) - 1)}
+                  disabled={(pagination?.page || 1) <= 1}
                 >
                   Previous
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handlePageChange(pagination.page + 1)}
-                  disabled={pagination.page >= pagination.totalPages}
+                  onClick={() => handlePageChange((pagination?.page || 1) + 1)}
+                  disabled={(pagination?.page || 1) >= (pagination?.totalPages || 1)}
                 >
                   Next
                 </Button>

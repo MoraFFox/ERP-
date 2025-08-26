@@ -1,13 +1,11 @@
 export interface User {
   id: string
   email: string
-  firstName: string
-  lastName: string
-  role: {
-    id: string
-    name: string
-    permissions: string[]
-  }
+  username: string
+  fullName?: string
+  role: string
+  createdAt: string
+  updatedAt: string
 }
 
 export interface AuthTokens {
@@ -22,16 +20,15 @@ export interface LoginCredentials {
 
 export interface RegisterData {
   email: string
+  username: string
   password: string
-  firstName: string
-  lastName: string
-  roleId?: string
+  fullName?: string
 }
 
 export interface Client {
   id: string
   name: string
-  email: string
+  email?: string
   phone?: string
   address?: string
   city?: string
@@ -41,11 +38,11 @@ export interface Client {
   website?: string
   industry?: string
   companySize?: string
-  status: "ACTIVE" | "INACTIVE" | "PROSPECT" | "CHURNED"
+  status?: "ACTIVE" | "INACTIVE" | "PROSPECT" | "CHURNED"
   notes?: string
   createdAt: string
   updatedAt: string
-  createdBy: {
+  createdBy?: {
     id: string
     firstName: string
     lastName: string

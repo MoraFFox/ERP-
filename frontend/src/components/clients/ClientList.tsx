@@ -56,8 +56,13 @@ export const ClientList = ({ onClientSelect, onClientEdit }: ClientListProps) =>
       setLoading(true)
       setError("")
       const response = await clientService.getClients(filters)
-      setClients(response.data.items)
-      setPagination(response.data.pagination)
+      setClients(response.data?.items || [])
+      setPagination(response.data?.pagination || {
+        page: 1,
+        limit: 10,
+        total: 0,
+        totalPages: 0
+      })
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch clients")
     } finally {
@@ -158,14 +163,14 @@ export const ClientList = ({ onClientSelect, onClientEdit }: ClientListProps) =>
 
       {/* Client List */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {clients.map((client) => (
+        {clients?.map((client) => (
           <Card key={client.id} className="hover:shadow-md transition-shadow">
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div>
                   <CardTitle className="text-lg">{client.name}</CardTitle>
                   <div className="flex items-center mt-1">
-                    {getStatusBadge(client.status)}
+                    {client.status && getStatusBadge(client.status)}
                     {client.industry && <span className="ml-2 text-sm text-gray-500">• {client.industry}</span>}
                   </div>
                 </div>
@@ -181,10 +186,12 @@ export const ClientList = ({ onClientSelect, onClientEdit }: ClientListProps) =>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <div className="flex items-center text-sm text-gray-600">
-                  <Mail className="mr-2 h-4 w-4" />
-                  {client.email}
-                </div>
+                {client.email && (
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Mail className="mr-2 h-4 w-4" />
+                    {client.email}
+                  </div>
+                )}
 
                 {client.phone && (
                   <div className="flex items-center text-sm text-gray-600">
@@ -217,7 +224,8 @@ export const ClientList = ({ onClientSelect, onClientEdit }: ClientListProps) =>
                 )}
 
                 <div className="pt-2 text-xs text-gray-500">
-                  Created {formatDate(client.createdAt)} by {client.createdBy.firstName} {client.createdBy.lastName}
+                  Created {formatDate(client.createdAt)}
+                  {client.createdBy && ` by ${client.createdBy.firstName} ${client.createdBy.lastName}`}
                 </div>
               </div>
             </CardContent>
@@ -240,28 +248,28 @@ export const ClientList = ({ onClientSelect, onClientEdit }: ClientListProps) =>
       )}
 
       {/* Pagination */}
-      {pagination.totalPages > 1 && (
+      {(pagination?.totalPages || 0) > 1 && (
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="text-sm text-gray-700">
-                Showing {(pagination.page - 1) * pagination.limit + 1} to{" "}
-                {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} clients
+                Showing {((pagination?.page || 1) - 1) * (pagination?.limit || 10) + 1} to{" "}
+                {Math.min((pagination?.page || 1) * (pagination?.limit || 10), pagination?.total || 0)} of {pagination?.total || 0} clients
               </div>
               <div className="flex space-x-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handlePageChange(pagination.page - 1)}
-                  disabled={pagination.page <= 1}
+                  onClick={() => handlePageChange((pagination?.page || 1) - 1)}
+                  disabled={(pagination?.page || 1) <= 1}
                 >
                   Previous
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handlePageChange(pagination.page + 1)}
-                  disabled={pagination.page >= pagination.totalPages}
+                  onClick={() => handlePageChange((pagination?.page || 1) + 1)}
+                  disabled={(pagination?.page || 1) >= (pagination?.totalPages || 1)}
                 >
                   Next
                 </Button>

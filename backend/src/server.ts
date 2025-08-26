@@ -7,7 +7,13 @@ import rateLimit from 'express-rate-limit';
 import authRoutes from './routes/auth';
 import clientRoutes from './routes/clients';
 import productRoutes from './routes/products';
+import orderRoutes from './routes/orders';
+import maintenanceRoutes from './routes/maintenance';
+import deliveryRoutes from './routes/deliveries';
+import visitCallRoutes from './routes/visit-calls';
+import testRoutes from './routes/test';
 import errorHandler from './middleware/errorHandler';
+import { authenticateToken } from './middleware/auth';
 
 const prisma = new PrismaClient();
 const app = express();
@@ -30,8 +36,13 @@ app.use(limiter);
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/clients', clientRoutes);
-app.use('/api/products', productRoutes);
+app.use('/api/test', testRoutes); // Test routes without authentication
+app.use('/api/clients', authenticateToken, clientRoutes);
+app.use('/api/products', authenticateToken, productRoutes);
+app.use('/api/orders', authenticateToken, orderRoutes);
+app.use('/api/maintenance', authenticateToken, maintenanceRoutes);
+app.use('/api/deliveries', authenticateToken, deliveryRoutes);
+app.use('/api/visit-calls', authenticateToken, visitCallRoutes);
 
 // Health check endpoint
 app.get('/api/health', (_, res) => {

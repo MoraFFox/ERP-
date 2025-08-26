@@ -51,7 +51,7 @@ The ERP system provides complete business management functionality including:
 
 \`\`\`bash
 # Install dependencies
-npm install
+cd frontend && npm install
 
 # Run development server
 npm run dev
